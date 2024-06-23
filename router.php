@@ -12,8 +12,6 @@ $views = __DIR__ . '/views';
 $cache = __DIR__ . '/cache';
 $blade = new BladeOne($views, $cache, BladeOne::MODE_AUTO);
 
-session_start();
-
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
 switch ($uri) {

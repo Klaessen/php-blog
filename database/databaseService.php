@@ -12,7 +12,7 @@ class DatabaseService
 
     public function __construct()
     {
-        $config = require_once 'config.inc.php';
+        $config = require_once '../config/config.inc.php';
         $this->host = $config['host'];
         $this->db = $config['database'];
         $this->user = $config['username'];

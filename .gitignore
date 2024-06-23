@@ -1,3 +1,4 @@
 /requirements.txt
 vendor/
 cache/
+node_modules/

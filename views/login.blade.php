@@ -1,19 +1,35 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('app')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-</head>
+@section('title', 'Login Page')
+@section('header', 'Login to Your Account')
 
-<body>
-    <h1>Login Page</h1>
-    <form method="post" action="/login">
-        <label>Email: <input type="email" name="email"></label><br>
-        <label>Password: <input type="password" name="password"></label><br>
-        <button type="submit">Login</button>
+@section('content')
+<div class="max-w-sm mx-auto p-8 bg-white shadow-md rounded h-1/3">
+    @if (isset($error) && $error)
+    <p class="bg-red-100 text-red-500 p-3 rounded">
+        {{ $error }}
+    </p>
+    @endif
+
+    <form method="POST" action="/login" class="space-y-4">
+        <div>
+            <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+            <input type="email" name="email" id="email" required
+                class="mt-1 block w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+        </div>
+
+        <div>
+            <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+            <input type="password" name="password" id="password" required
+                class="mt-1 block w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+        </div>
+
+        <div>
+            <button type="submit"
+                class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-500 hover:bg-blue-700">
+                Log In
+            </button>
+        </div>
     </form>
-</body>
-
-</html>
+</div>
+@endsection

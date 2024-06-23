@@ -1,8 +1,20 @@
 # Use the official PHP image with Apache
 FROM php:8.0-apache
 
-# Install PDO MySQL extension
+# Install system dependencies required for building PHP extensions
+RUN apt-get update && apt-get install -y \
+    autoconf \
+    gcc \
+    make \
+    pkg-config \
+    libssl-dev && apt-get clean \ # Cleaning up the apt cache to reduce image size && rm -rf /var/lib/apt/lists/*
+
+# Install PDO and MySQL extensions
 RUN docker-php-ext-install pdo pdo_mysql
+
+# Install Redis extension via PECL and enable it
+RUN pecl install redis \
+    && docker-php-ext-enable redis
 
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
@@ -12,6 +24,9 @@ COPY . /var/www/html/
 
 # Set the working directory
 WORKDIR /var/www/html
+
+# Update Apache configuration to serve the public directory
+RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer

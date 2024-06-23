@@ -1,6 +1,6 @@
 <?php
-require_once 'models/User.php';
-require_once 'vendor/autoload.php';
+require_once '../models/User.php';
+require_once '../vendor/autoload.php';
 
 use eftec\bladeone\BladeOne;
 
