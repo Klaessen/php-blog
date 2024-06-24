@@ -1,5 +1,5 @@
 # Use the official PHP image with Apache
-FROM php:8.0-apache
+FROM php:8.1-apache
 
 # Install system dependencies required for building PHP extensions
 RUN apt-get update && apt-get install -y \
@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y \
     gcc \
     make \
     pkg-config \
-    libssl-dev && apt-get clean \ # Cleaning up the apt cache to reduce image size && rm -rf /var/lib/apt/lists/*
+    libssl-dev && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install PDO and MySQL extensions
 RUN docker-php-ext-install pdo pdo_mysql

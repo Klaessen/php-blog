@@ -3,14 +3,22 @@ require 'vendor/autoload.php';
 require 'services/Container.php';
 require 'services/DatabaseService.php';
 require 'controllers/UserController.php';
+require 'services/ConfigService.php';
 
 use eftec\bladeone\BladeOne;
+use Models\BaseModel;
+use Models\User;
 
-$container = new Container();
+$container = Container::getInstance();
+
+// Setting up ConfigService
+$container->set(ConfigService::class, function ($c) {
+    return new ConfigService();
+});
 
 // Setting up DatabaseService
 $container->set(DatabaseService::class, function ($c) {
-    return new DatabaseService();
+    return new DatabaseService($c->get(ConfigService::class));
 });
 
 // Setting up BladeOne
@@ -25,6 +33,19 @@ $container->set(UserController::class, function ($c) {
     return new UserController($c->get(BladeOne::class), $c->get(DatabaseService::class));
 });
 
+// Automatically resolving BaseModel dependencies
+$container->bind(BaseModel::class, function ($container) {
+    return new BaseModel($container->make(DatabaseService::class));
+});
+
+// Resolving User model
+$container->bind(User::class, function ($container) {
+    return new User($container->make(DatabaseService::class));
+});
+
+$container->bind(User::class, function ($container) {
+    return new User($container->make(DatabaseService::class));
+});
 
 try {
     session_start([

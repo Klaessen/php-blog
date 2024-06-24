@@ -1,27 +1,33 @@
 <?php
+namespace Models;
+
+use ConfigService;
+use DatabaseService;
+use PDO;
+
 class BaseModel
 {
     protected $pdo;
-    protected $table;
+    protected $table ;
     protected $primaryKey = "id";
 
     public function __construct()
     {
-        $config = require('../config/config.inc.php');
-        $dsn = "mysql:host={$config['host']};dbname={$config['database']};charset=utf8mb4";
-        $options = [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            PDO::ATTR_EMULATE_PREPARES => false,
-        ];
-        try {
-            $this->pdo = new PDO($dsn, $config['username'], $config['password'], $options);
-        } catch (PDOException $e) {
-            die('Connection failed: ' . $e->getMessage());
-        }
+        $config = new ConfigService();
+        $db = new DatabaseService($config);
+        $this->pdo = $db->getConnection();
     }
 
-    public function paginate($query, $page = 1, $limit = 10, $params = [])
+    /**
+     * Paginate the query results
+     * 
+     * @param string $query
+     * @param int $page
+     * @param int $limit
+     * @param array $params
+     * @return array
+     */
+    public function paginate(string $query, int $page = 1,  int $limit = 10, array $params = []): array
     {
         $offset = ($page - 1) * $limit;
         $query .= " LIMIT :limit OFFSET :offset";
@@ -35,14 +41,13 @@ class BaseModel
         return $stmt->fetchAll();
     }
 
-    public function find($id)
-    {
-        $stmt = $this->pdo->prepare("SELECT * FROM {$this->table} WHERE id = :id");
-        $stmt->execute([':id' => $id]);
-        return $stmt->fetch();
-    }
-
-    public function insert(array $data)
+    /**
+     * Insert a new record
+     * 
+     * @param array $data
+     * @return int
+     */
+    public function insert(array $data): int
     {
         $columns = implode(', ', array_keys($data));
         $placeholders = ':' . implode(', :', array_keys($data));
@@ -51,7 +56,13 @@ class BaseModel
         return $this->pdo->lastInsertId();
     }
 
-    public function update($id, array $data)
+    /**
+     * Update a record
+     * 
+     * @param int $id
+     * @param array $data
+     */
+    public function update($id, array $data): void
     {
         $columns = '';
         foreach (array_keys($data) as $key) {
@@ -63,7 +74,13 @@ class BaseModel
         $stmt->execute($data);
     }
 
-    public function delete($id)
+    /**
+     * Delete a record
+     * 
+     * @param int $id
+     
+     */
+    public function delete(int $id):void
     {
         $stmt = $this->pdo->prepare("DELETE FROM {$this->table} WHERE id = :id");
         $stmt->execute([':id' => $id]);

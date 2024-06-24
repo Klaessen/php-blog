@@ -5,12 +5,6 @@
 
 @section('content')
 <div class="max-w-sm mx-auto p-8 bg-white shadow-md rounded h-1/3">
-    @if (isset($error) && $error)
-    <p class="bg-red-100 text-red-500 p-3 rounded">
-        {{ $error }}
-    </p>
-    @endif
-
     <form method="POST" action="/login" class="space-y-4">
         <div>
             <label for="email" class="block text-sm font-medium text-gray-700">Email</label>

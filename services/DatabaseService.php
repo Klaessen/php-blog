@@ -10,9 +10,10 @@ class DatabaseService
     private $charset;
     private $pdo;
 
-    public function __construct()
+    public function __construct(ConfigService $configService)
     {
-        $config = require_once '../config/config.inc.php';
+        $config = $configService->getConfig();
+
         $this->host = $config['host'];
         $this->db = $config['database'];
         $this->user = $config['username'];

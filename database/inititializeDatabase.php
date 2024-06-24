@@ -1,7 +1,8 @@
 <?php
 require('services/DatabaseService.php');
 
-$dbService = new DatabaseService();
+$configService = new ConfigService();
+$dbService = new DatabaseService($configService);
 $pdo = $dbService->getConnection();
 
 try {

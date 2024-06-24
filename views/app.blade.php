@@ -32,7 +32,7 @@
         </p>
         @endif
 
-        <div class="flex flex-col justify-center mx-auto mt-8 flex-grow bg-gray-200 w-full">
+        <div class="flex flex-col justify-center mx-auto flex-grow bg-gray-200 w-full">
             @yield('content')
         </div>
 

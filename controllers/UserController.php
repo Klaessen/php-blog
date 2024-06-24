@@ -1,7 +1,6 @@
 <?php
-require_once '../models/User.php';
-
 use eftec\bladeone\BladeOne;
+use Models\User;
 
 class UserController
 {
@@ -12,7 +11,27 @@ class UserController
         $this->blade = $blade;
     }
 
-    public function dashboard()
+    public function login (string $email, string $password)
+    {
+
+        $user = User::getUserByEmail($email);
+        if ($user) {
+            $validated = $user->validateCredentials($password);
+            if ($validated) {;
+                $this->dashboard();
+            } else {
+                echo $this->blade->run("login", ['error' => 'Invalid credentials']);
+            }
+        } else {
+            echo $this->blade->run("login", ['error' => 'Invalid credentials']);
+        }
+    }
+
+
+    /**
+     * Display the dashboard
+     */
+    public function dashboard(): void
     {
         if (!isset($_SESSION['user_id'])) {
             header('Location: /login');
@@ -32,7 +51,12 @@ class UserController
         ]);
     }
 
-    public function createArticle($title, $content)
+    /**
+     * Create an article
+     * @param string $title
+     * @param string $content
+     */
+    public function createArticle(string $title, string $content): void
     {
         // Validate input
         $title = $_POST['title'] ?? '';
@@ -51,6 +75,6 @@ class UserController
         $user = User::getAuthenticatedUser();
         $user->createArticle($title, $content);
         
-        return;
+        $this->dashboard();
     }
 }
