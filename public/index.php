@@ -1,3 +1,3 @@
 <?php
 require_once("../bootstrap.php");
-require '../router.php';
+require_once '../router.php';

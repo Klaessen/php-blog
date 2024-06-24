@@ -1,6 +1,5 @@
 <?php
 require_once '../models/User.php';
-require_once '../vendor/autoload.php';
 
 use eftec\bladeone\BladeOne;
 
@@ -8,16 +7,13 @@ class UserController
 {
     private $blade;
 
-    public function __construct()
+    public function __construct(BladeOne $blade)
     {
-        $views = __DIR__ . '/views';
-        $cache = __DIR__ . '/cache';
-        $this->blade = new BladeOne($views, $cache, BladeOne::MODE_AUTO);
+        $this->blade = $blade;
     }
 
     public function dashboard()
     {
-        session_start();
         if (!isset($_SESSION['user_id'])) {
             header('Location: /login');
             exit();

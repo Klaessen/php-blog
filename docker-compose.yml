@@ -2,6 +2,7 @@ services:
   mariadb:
     image: mariadb:latest
     container_name: mariadb
+    restart: always
     environment:
       MYSQL_ROOT_PASSWORD: secret
       MYSQL_DATABASE: blog_db
@@ -19,6 +20,7 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: php-apache
+    restart: always
     ports:
       - "8080:80"
     volumes:
@@ -32,8 +34,7 @@ services:
   redis:
     image: redis:latest
     container_name: redis
-    environment:
-      REDIS_PASSWORD: secret123
+    restart: always
     command: redis-server --requirepass secret123
     networks:
       - blog_net

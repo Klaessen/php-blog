@@ -1,16 +1,12 @@
 <?php
 require 'vendor/autoload.php';
-require 'database/databaseService.php';
-require 'controllers/UserController.php';
-
-$dbService = new DatabaseService();
-$pdo = $dbService->getConnection();
 
 use eftec\bladeone\BladeOne;
 
 $views = __DIR__ . '/views';
 $cache = __DIR__ . '/cache';
 $blade = new BladeOne($views, $cache, BladeOne::MODE_AUTO);
+$userController = $container->get(UserController::class);
 
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
@@ -35,7 +31,12 @@ switch ($uri) {
                 echo $blade->run("login", ['error' => 'Invalid credentials']);
             }
         } else {
-            echo $blade->run("login");
+            if(isset($_SESSION['user_id'])) {
+                header('Location: /dashboard');
+                exit();
+            } else {
+                echo $blade->run("login");
+            }
         }
         break;
     case '/logout':
@@ -43,10 +44,6 @@ switch ($uri) {
         header('Location: /');
         exit();
     case '/dashboard':
-        if (!isset($_SESSION['user_id'])) {
-            header('Location: /login');
-            exit();
-        }
         $userController->dashboard();
         break;
     default:

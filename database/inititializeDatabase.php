@@ -1,5 +1,5 @@
 <?php
-require('database/databaseService.php');
+require('services/DatabaseService.php');
 
 $dbService = new DatabaseService();
 $pdo = $dbService->getConnection();

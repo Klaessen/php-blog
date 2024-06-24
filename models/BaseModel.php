@@ -7,7 +7,7 @@ class BaseModel
 
     public function __construct()
     {
-        $config = require('config.php');
+        $config = require('../config/config.inc.php');
         $dsn = "mysql:host={$config['host']};dbname={$config['database']};charset=utf8mb4";
         $options = [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
@@ -21,10 +21,14 @@ class BaseModel
         }
     }
 
-    public function paginate($query, $page = 1, $limit = 10)
+    public function paginate($query, $page = 1, $limit = 10, $params = [])
     {
         $offset = ($page - 1) * $limit;
-        $stmt = $this->pdo->prepare($query . " LIMIT :limit OFFSET :offset");
+        $query .= " LIMIT :limit OFFSET :offset";
+        $stmt = $this->pdo->prepare($query);
+        foreach ($params as $key => $value) {
+            $stmt->bindParam(':' . $key, $value);
+        }
         $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
         $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
         $stmt->execute();

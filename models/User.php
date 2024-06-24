@@ -9,10 +9,13 @@ class User extends BaseModel
     public $email;
     
     
-    public function __construct()
+    public function __construct($id = null, $username = null, $email = null, $password = null)
     {
         parent::__construct();
-        session_start();
+        $this->id = $id;
+        $this->username = $username;
+        $this->email = $email;
+        $this->password = $password;
     }
 
     public function create($name, $email, $password)
@@ -30,7 +33,11 @@ class User extends BaseModel
     {
         $stmt = $this->pdo->prepare("SELECT * FROM users WHERE id = :id");
         $stmt->execute([':id' => $id]);
-        return $stmt->fetch();
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($data) {
+            return new self($data['id'], $data['name'], $data['email'], $data['password']);
+        }
+        return null;
     }
 
     public function loginUser($userId)
@@ -41,7 +48,7 @@ class User extends BaseModel
     public function logoutUser()
     {
         session_destroy();
-        session_start();  // Reinitialize session if logout is not final action
+        session_start();
     }
 
     public static function getUserId()
@@ -85,9 +92,10 @@ class User extends BaseModel
             $stmt->execute();
             return $stmt->fetchAll();
         } else {
-            // Fetch paginated articles as closure
+            // Prepare query with user_id as a parameter
             $query = "SELECT * FROM articles WHERE user_id = :userId";
-            return $this->paginate($query, $page, $limit);
+            $params = ['userId' => $this->id]; // Pass user_id as parameter
+            return $this->paginate($query, $page, $limit, $params);
         }
     }
 }
