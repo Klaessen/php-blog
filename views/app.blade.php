@@ -12,13 +12,25 @@
     <div class="min-h-screen flex flex-col">
         <header class=" bg-gray-800 text-white p-4">
             <div class="container mx-auto flex justify-between items-center">
-                <h1 class="text-lg">@yield('header', 'Welcome!')</h1>
+                <h1 class="text-lg"><a href="/"></a>@yield('header', 'Welcome!')</h1>
                 <nav>
                     <a href="/login" class="text-blue-200 hover:text-blue-400 mx-2">Login</a>
                     <a href="/register" class="text-blue-200 hover:text-blue-400">Register</a>
                 </nav>
             </div>
         </header>
+
+        @if (isset($error) && $error)
+        <p class="bg-red-100 text-red-500 p-3 rounded text-center">
+            {{ $error }}
+        </p>
+        @endif
+
+        @if(isset($success) && $success)
+        <p class="bg-green-100 text-green-500 p-3 rounded text-center">
+            {{ $success }}
+        </p>
+        @endif
 
         <div class="flex flex-col justify-center mx-auto mt-8 flex-grow bg-gray-200 w-full">
             @yield('content')

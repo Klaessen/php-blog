@@ -46,6 +46,15 @@ switch ($uri) {
     case '/dashboard':
         $userController->dashboard();
         break;
+    case '/articles/create':
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $userController->createArticle($_POST['title'], $_POST['content']);
+            // Redirect back to dashboard or show success message
+            echo $blade->run("dashboard",['success' => 'Article created successfully']);
+        } else {
+            $userController->dashboard();
+        }
+        break;
     default:
         http_response_code(404);
         echo "Page not found";

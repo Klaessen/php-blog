@@ -98,4 +98,14 @@ class User extends BaseModel
             return $this->paginate($query, $page, $limit, $params);
         }
     }
+
+    public function createArticle($title, $content)
+    {
+        $stmt = $this->pdo->prepare("INSERT INTO articles (title, content, user_id) VALUES (:title, :content, :userId)");
+        $stmt->execute([
+            ':title' => $title,
+            ':content' => $content,
+            ':userId' => $this->id
+        ]);
+    }
 }

@@ -21,13 +21,36 @@ class UserController
    
         $user = User::getAuthenticatedUser();
         $page = $_GET['page'] ?? 1;
-        $articlesPerPage = 10;
+        $articlesPerPage = 3;
         $articles = $user->articles($page, $articlesPerPage);
 
         echo $this->blade->run("dashboard", [
             'articles' => $articles,
-            'currentPage' => $page,
-            'user' => $user
+            'page' => $page,
+            'user' => $user,
+            'articlesPerPage' => $articlesPerPage,
         ]);
+    }
+
+    public function createArticle($title, $content)
+    {
+        // Validate input
+        $title = $_POST['title'] ?? '';
+        $content = $_POST['content'] ?? '';
+
+        if (empty($title) || empty($content)) {
+           echo $this->blade->run("create-article", ['error' => 'Title and content are required']);
+            exit();
+        }
+
+        if (strlen($content) > 1000) {
+            echo $this->blade->run("create-article", ['error' => 'Content is too long']);
+            exit();
+        }
+    
+        $user = User::getAuthenticatedUser();
+        $user->createArticle($title, $content);
+        
+        return;
     }
 }
